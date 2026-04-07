@@ -93,7 +93,7 @@ function shuffleBalls() {
     });
 }
 
-// 9. The Quiz Logic
+// 9. The Quiz Logic (UPDATED: Non-repeating questions)
 const questions = [
     {
         question: "Who said: 'Cool, cool, cool, cool, cool. No doubt, no doubt.'?",
@@ -114,6 +114,7 @@ const questions = [
 ];
 
 let currentQuestion = {};
+let availableQuestions = [...questions]; // Create a copy of the questions to draw from
 
 // Grab HTML elements
 const retryBtn = document.getElementById('retryBtn');
@@ -123,11 +124,22 @@ const answerInput = document.getElementById('answerInput');
 const questionText = document.getElementById('questionText');
 const feedbackText = document.getElementById('feedbackText');
 
-// Open Modal and pick a random question
+// Open Modal and pick a random, non-repeating question
 retryBtn.addEventListener('click', () => {
-    // Pick random question from array
-    currentQuestion = questions[Math.floor(Math.random() * questions.length)];
+    // If the deck is empty, refill it!
+    if (availableQuestions.length === 0) {
+        availableQuestions = [...questions];
+    }
+
+    // Pick a random index from the remaining questions
+    const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+    
+    // Set the current question
+    currentQuestion = availableQuestions[randomIndex];
     questionText.innerText = currentQuestion.question;
+    
+    // Remove that question from the available pool so it doesn't repeat this round
+    availableQuestions.splice(randomIndex, 1);
     
     // Reset UI
     answerInput.value = '';
