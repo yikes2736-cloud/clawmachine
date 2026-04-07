@@ -80,3 +80,20 @@ window.addEventListener('mousedown', () => {
 Render.run(render);
 const runner = Runner.create();
 Runner.run(runner, engine);
+
+
+
+
+
+function shuffleBalls() {
+    balls.forEach(ball => {
+        // Calculate a random explosive force
+        // We use the ball's mass so the physics look realistic
+        let forceMagnitude = 0.08 * ball.mass; 
+        
+        Matter.Body.applyForce(ball, ball.position, {
+            x: (Math.random() - 0.5) * forceMagnitude, // Random left or right
+            y: -forceMagnitude - (Math.random() * forceMagnitude) // Massive force upwards
+        });
+    });
+}
