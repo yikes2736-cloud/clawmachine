@@ -11,14 +11,21 @@
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
-            background-color: #fafafa; 
             font-family: sans-serif;
+            
+            /* Your custom Pinterest background image */
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #fafafa; /* Just a fallback color while the image loads */
         }
-        /* The game canvas will be injected here by Matter.js */
+        
+        /* The game canvas */
         canvas {
             border: 4px solid #ffd1dc; 
             border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* Made the shadow slightly darker so it pops against your photo */
         }
 
         /* The Reroll Button */
