@@ -97,7 +97,12 @@ const myPhotos = [
     '24.jpg', 
     '25.jpg', 
     '26.jpg', 
-    '27.jpg' 
+    '27.JPG', 
+    '28.jpg', 
+    '29.jpg', 
+    '30.jpg', 
+    '31.jpg', 
+    '32.JPG'
 ];
 
 const rewardModal = document.getElementById('rewardModal');
