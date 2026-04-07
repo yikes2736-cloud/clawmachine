@@ -12,6 +12,7 @@
             align-items: center; 
             height: 100vh; 
             background-color: #fafafa; /* Aesthetic clean background */
+            font-family: sans-serif;
         }
         /* The game canvas will be injected here by Matter.js */
         canvas {
@@ -19,9 +20,70 @@
             border-radius: 10px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
+
+        /* Styling for our new Quiz Button */
+        #retryBtn {
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+            padding: 12px 24px; 
+            font-weight: bold; 
+            background-color: #ffd1dc; 
+            color: #333;
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.1s;
+        }
+        #retryBtn:active {
+            transform: scale(0.95);
+        }
+
+        /* Styling for the hidden Quiz Box */
+        #quizModal {
+            display: none; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); 
+            text-align: center; 
+            z-index: 10;
+            width: 300px;
+        }
+        #answerInput {
+            padding: 10px; 
+            margin: 20px 0; 
+            width: 90%;
+            border: 2px solid #eee;
+            border-radius: 5px;
+        }
+        #submitAnswer {
+            padding: 10px 20px; 
+            background: #a2cffe; 
+            font-weight: bold;
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+
+    <button id="retryBtn">Want another try !!</button>
+
+    <div id="quizModal">
+        <h3 id="questionText">Question goes here</h3>
+        <input type="text" id="answerInput" placeholder="Type answer here...">
+        <br>
+        <button id="submitAnswer">Submit & Blow 'em up!</button>
+        <p id="feedbackText" style="color: red; font-size: 0.9em; display: none;">Nope, try again!</p>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <script src="script.js"></script>
 </body>
