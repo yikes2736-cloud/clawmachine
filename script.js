@@ -166,9 +166,9 @@ const questions = [
     { question: "who said: 'when you talk to her you can tell, as vrinda gets older, she'll turn into a bugatti'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha"], correct: "megan" },
     { question: "who said: 'i’ll never forget that you took this from me. it’s inexcusable. and when there is smt of yours i will not hesitate. keep one eye open as you sleep'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "vrinda" },
     { question: "who said: 'it's like talking to one of those tennis ball machines'? in regards to another person speaking", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "anagha" },
-    { question: "who said: 'actually im holding you at gunpoint to elaborate rn'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "rt" }
-    { question: "who said: 'you're a dirty little snitch you are!'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "aarushi" }
-    { question: "who said: 'actually i will respond with a diss track'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "sai" }
+    { question: "who said: 'actually im holding you at gunpoint to elaborate rn'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "rt" },
+    { question: "who said: 'you're a dirty little snitch you are!'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "aarushi" },
+    { question: "who said: 'actually i will respond with a diss track'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "sai" },
     { question: "who said: 'don't live in your dreams, be practical'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "charvi" }
 ];
 
