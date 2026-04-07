@@ -4,7 +4,8 @@ const Engine = Matter.Engine,
       Runner = Matter.Runner,
       Bodies = Matter.Bodies,
       Composite = Matter.Composite,
-      Body = Matter.Body;
+      Body = Matter.Body,
+      Events = Matter.Events; // NEW: We need Events to detect collisions!
 
 // 2. Create the Physics Engine
 const engine = Engine.create();
@@ -35,7 +36,14 @@ const rightChute = Bodies.rectangle(340, 680, 20, 150, { isStatic: true, render:
 // 5. The "Crank" Mechanism (A trapdoor)
 const trapdoor = Bodies.rectangle(300, 740, 100, 20, { isStatic: true, render: { fillStyle: '#ff8da1' } });
 
-// 6. Create the Gacha Balls
+// NEW: The Invisible Prize Sensor (Catches the ball when it falls)
+const prizeSensor = Bodies.rectangle(300, 850, 200, 20, { 
+    isStatic: true, 
+    isSensor: true, // This means balls pass through it, but it triggers an event
+    render: { visible: false } 
+});
+
+// 6. Create the Gacha Balls (Back to solid pink!)
 const balls = [];
 const numberOfBalls = 40;
 
@@ -51,7 +59,7 @@ for (let i = 0; i < numberOfBalls; i++) {
     balls.push(ball);
 }
 
-Composite.add(world, [leftWall, rightWall, leftFunnel, rightFunnel, leftChute, rightChute, trapdoor, ...balls]);
+Composite.add(world, [leftWall, rightWall, leftFunnel, rightFunnel, leftChute, rightChute, trapdoor, prizeSensor, ...balls]);
 
 Render.run(render);
 const runner = Runner.create();
@@ -61,24 +69,67 @@ Runner.run(runner, engine);
 // GAME LOGIC & INTERACTIONS
 // ==========================================
 
-// 7. The Gacha "Turn" Logic 
-let isDropping = false;
+// --- NEW: THE PHOTO REVEAL LOGIC ---
+const myPhotos = [
+    'pic1.jpg', // Replace these with your actual file names uploaded to GitHub!
+    'pic2.jpg',
+    'pic3.png'
+];
 
+const rewardModal = document.getElementById('rewardModal');
+const rewardImage = document.getElementById('rewardImage');
+const closeRewardBtn = document.getElementById('closeReward');
+
+// Listen for a collision between a ball and the invisible sensor
+Events.on(engine, 'collisionStart', function(event) {
+    const pairs = event.pairs;
+    
+    for (let i = 0; i < pairs.length; i++) {
+        const bodyA = pairs[i].bodyA;
+        const bodyB = pairs[i].bodyB;
+
+        // Check if one of the colliding bodies is our prize sensor
+        if (bodyA === prizeSensor || bodyB === prizeSensor) {
+            
+            // Figure out which body is the ball
+            const droppedBall = bodyA === prizeSensor ? bodyB : bodyA;
+            
+            // Delete the ball so they don't pile up off-screen
+            Composite.remove(world, droppedBall);
+            
+            // Pick a random photo and show the popup!
+            const randomPhoto = myPhotos[Math.floor(Math.random() * myPhotos.length)];
+            rewardImage.src = randomPhoto;
+            rewardModal.style.display = 'block';
+        }
+    }
+});
+
+// Close the reward popup when they click the button
+closeRewardBtn.addEventListener('click', () => {
+    rewardModal.style.display = 'none';
+});
+
+
+// --- THE TRAPDOOR LOGIC ---
+let isDropping = false;
 render.canvas.addEventListener('mousedown', () => {
     if (isDropping) return; 
     isDropping = true;
-
     Body.setPosition(trapdoor, { x: 1000, y: 740 });
-
     setTimeout(() => {
         Body.setPosition(trapdoor, { x: 300, y: 740 });
         isDropping = false;
     }, 400); 
 });
 
-// 8. The Explosion Physics
+
+// --- THE QUIZ LOGIC ---
 function shuffleBalls() {
-    balls.forEach(ball => {
+    // Re-select the balls currently in the world (since some may have been deleted)
+    const currentBalls = Composite.allBodies(world).filter(b => b.circleRadius === 25);
+    
+    currentBalls.forEach(ball => {
         let forceMagnitude = 0.08 * ball.mass; 
         Matter.Body.applyForce(ball, ball.position, {
             x: (Math.random() - 0.5) * forceMagnitude, 
@@ -87,29 +138,11 @@ function shuffleBalls() {
     });
 }
 
-// 9. The Quiz Logic (UPDATED: Multiple Choice)
-// When adding your own questions, just follow this exact structure!
 const questions = [
-    {
-        question: "Who said: 'Cool, cool, cool, cool, cool. No doubt, no doubt.'?",
-        options: ["Jake Peralta", "Amy Santiago", "Captain Holt", "Terry Jeffords"],
-        correct: "Jake Peralta"
-    },
-    {
-        question: "Who said: 'It's not lupus. It's never lupus.'?",
-        options: ["Dr. Foreman", "Dr. Wilson", "Gregory House", "Dr. Cameron"],
-        correct: "Gregory House"
-    },
-    {
-        question: "Who said: 'I'm not a psychopath, I'm a high-functioning sociopath.'?",
-        options: ["John Watson", "Jim Moriarty", "Sherlock Holmes", "Mycroft Holmes"],
-        correct: "Sherlock Holmes"
-    },
-    {
-        question: "Who said: 'Are you the strongest because you're Satoru Gojo, or are you Satoru Gojo because you're the strongest?'?",
-        options: ["Yuji Itadori", "Suguru Geto", "Kento Nanami", "Megumi Fushiguro"],
-        correct: "Suguru Geto"
-    }
+    { question: "Who said: 'Cool, cool, cool, cool, cool. No doubt, no doubt.'?", options: ["Jake Peralta", "Amy Santiago", "Captain Holt", "Terry Jeffords"], correct: "Jake Peralta" },
+    { question: "Who said: 'It's not lupus. It's never lupus.'?", options: ["Dr. Foreman", "Dr. Wilson", "Gregory House", "Dr. Cameron"], correct: "Gregory House" },
+    { question: "Who said: 'I'm not a psychopath, I'm a high-functioning sociopath.'?", options: ["John Watson", "Jim Moriarty", "Sherlock Holmes", "Mycroft Holmes"], correct: "Sherlock Holmes" },
+    { question: "Who said: 'Are you the strongest because you're Satoru Gojo, or are you Satoru Gojo because you're the strongest?'?", options: ["Yuji Itadori", "Suguru Geto", "Kento Nanami", "Megumi Fushiguro"], correct: "Suguru Geto" }
 ];
 
 let currentQuestion = {};
@@ -121,40 +154,32 @@ const questionText = document.getElementById('questionText');
 const optionsContainer = document.getElementById('optionsContainer');
 const feedbackText = document.getElementById('feedbackText');
 
-// Open Modal and set up the multiple choice buttons
 retryBtn.addEventListener('click', () => {
-    if (availableQuestions.length === 0) {
-        availableQuestions = [...questions];
-    }
+    if (availableQuestions.length === 0) availableQuestions = [...questions];
 
     const randomIndex = Math.floor(Math.random() * availableQuestions.length);
     currentQuestion = availableQuestions[randomIndex];
     questionText.innerText = currentQuestion.question;
     availableQuestions.splice(randomIndex, 1);
     
-    // Clear out the old buttons and hide the error message
     optionsContainer.innerHTML = '';
     feedbackText.style.display = 'none';
 
-    // Create a new button for every option in the array
     currentQuestion.options.forEach(optionText => {
         const btn = document.createElement('button');
         btn.innerText = optionText;
-        btn.classList.add('option-btn'); // Applies the CSS we wrote in HTML
+        btn.classList.add('option-btn'); 
 
-        // What happens when they click an option
         btn.addEventListener('click', () => {
             if (optionText === currentQuestion.correct) {
-                quizModal.style.display = 'none'; // Hide modal
-                shuffleBalls(); // BOOM!
+                quizModal.style.display = 'none'; 
+                shuffleBalls(); 
             } else {
-                feedbackText.style.display = 'block'; // Show error text
-                btn.classList.add('wrong'); // Turns the clicked button red
+                feedbackText.style.display = 'block'; 
+                btn.classList.add('wrong'); 
             }
         });
-
-        optionsContainer.appendChild(btn); // Add the button to the screen
+        optionsContainer.appendChild(btn); 
     });
-
     quizModal.style.display = 'block'; 
 });
