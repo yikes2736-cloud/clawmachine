@@ -163,10 +163,13 @@ function shuffleBalls() {
 }
 
 const questions = [
-    { question: "Who said: 'Cool, cool, cool, cool, cool. No doubt, no doubt.'?", options: ["Jake Peralta", "Amy Santiago", "Captain Holt", "Terry Jeffords"], correct: "Jake Peralta" },
-    { question: "Who said: 'It's not lupus. It's never lupus.'?", options: ["Dr. Foreman", "Dr. Wilson", "Gregory House", "Dr. Cameron"], correct: "Gregory House" },
-    { question: "Who said: 'I'm not a psychopath, I'm a high-functioning sociopath.'?", options: ["John Watson", "Jim Moriarty", "Sherlock Holmes", "Mycroft Holmes"], correct: "Sherlock Holmes" },
-    { question: "Who said: 'Are you the strongest because you're Satoru Gojo, or are you Satoru Gojo because you're the strongest?'?", options: ["Yuji Itadori", "Suguru Geto", "Kento Nanami", "Megumi Fushiguro"], correct: "Suguru Geto" }
+    { question: "who said: 'when you talk to her you can tell, as vrinda gets older, she'll turn into a bugatti'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha"], correct: "megan" },
+    { question: "who said: 'i’ll never forget that you took this from me. it’s inexcusable. and when there is smt of yours i will not hesitate. keep one eye open as you sleep'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "vrinda" },
+    { question: "who said: 'it's like talking to one of those tennis ball machines'? in regards to another person speaking", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "anagha" },
+    { question: "who said: 'actually im holding you at gunpoint to elaborate rn'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "rt" }
+    { question: "who said: 'you're a dirty little snitch you are!'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "aarushi" }
+    { question: "who said: 'actually i will respond with a diss track'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "sai" }
+    { question: "who said: 'don't live in your dreams, be practical'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "charvi" }
 ];
 
 let currentQuestion = {};
