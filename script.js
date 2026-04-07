@@ -35,7 +35,6 @@ const leftChute = Bodies.rectangle(260, 680, 20, 150, { isStatic: true, render: 
 const rightChute = Bodies.rectangle(340, 680, 20, 150, { isStatic: true, render: { fillStyle: '#ffd1dc' } });
 
 // 5. The "Crank" Mechanism (A trapdoor)
-// We put this right under the chute to hold the balls in
 const trapdoor = Bodies.rectangle(300, 740, 100, 20, { isStatic: true, render: { fillStyle: '#ff8da1' } });
 
 // 6. Create the Gacha Balls
@@ -46,7 +45,6 @@ for (let i = 0; i < numberOfBalls; i++) {
     let randomX = Math.random() * 500 + 50; 
     let randomY = Math.random() * -800 - 50; 
     
-    // We made the balls slightly smaller (25 radius) so they fit down the chute!
     let ball = Bodies.circle(randomX, randomY, 25, {
         restitution: 0.6, 
         friction: 0.005,
@@ -58,42 +56,94 @@ for (let i = 0; i < numberOfBalls; i++) {
 // Add everything to the physics world
 Composite.add(world, [leftWall, rightWall, leftFunnel, rightFunnel, leftChute, rightChute, trapdoor, ...balls]);
 
-// 7. The Gacha "Turn" Logic
+// Run the engine
+Render.run(render);
+const runner = Runner.create();
+Runner.run(runner, engine);
+
+// ==========================================
+// GAME LOGIC & INTERACTIONS
+// ==========================================
+
+// 7. The Gacha "Turn" Logic (FIXED: Now only works when clicking the canvas)
 let isDropping = false;
 
-// When someone clicks anywhere on the screen, open the trapdoor!
-window.addEventListener('mousedown', () => {
+render.canvas.addEventListener('mousedown', () => {
     if (isDropping) return; // Prevent spam-clicking
     isDropping = true;
 
     // Move the trapdoor out of the way instantly
     Body.setPosition(trapdoor, { x: 1000, y: 740 });
 
-    // Wait 400 milliseconds (just enough for one ball to drop), then put it back
+    // Wait 400 milliseconds, then put it back
     setTimeout(() => {
         Body.setPosition(trapdoor, { x: 300, y: 740 });
         isDropping = false;
     }, 400); 
 });
 
-// Run the engine
-Render.run(render);
-const runner = Runner.create();
-Runner.run(runner, engine);
-
-
-
-
-
+// 8. The Explosion Physics
 function shuffleBalls() {
     balls.forEach(ball => {
-        // Calculate a random explosive force
-        // We use the ball's mass so the physics look realistic
         let forceMagnitude = 0.08 * ball.mass; 
-        
         Matter.Body.applyForce(ball, ball.position, {
-            x: (Math.random() - 0.5) * forceMagnitude, // Random left or right
-            y: -forceMagnitude - (Math.random() * forceMagnitude) // Massive force upwards
+            x: (Math.random() - 0.5) * forceMagnitude, 
+            y: -forceMagnitude - (Math.random() * forceMagnitude) 
         });
     });
 }
+
+// 9. The Quiz Logic
+const questions = [
+    {
+        question: "Who said: 'Cool, cool, cool, cool, cool. No doubt, no doubt.'?",
+        answers: ["jake", "jake peralta", "peralta"]
+    },
+    {
+        question: "Who said: 'It's not lupus. It's never lupus.'?",
+        answers: ["house", "gregory house", "dr house"]
+    },
+    {
+        question: "Who said: 'I'm not a psychopath, I'm a high-functioning sociopath.'?",
+        answers: ["sherlock", "sherlock holmes", "holmes"]
+    },
+    {
+        question: "Who said: 'Are you the strongest because you're Satoru Gojo, or are you Satoru Gojo because you're the strongest?'?",
+        answers: ["geto", "suguru geto", "suguru"]
+    }
+];
+
+let currentQuestion = {};
+
+// Grab HTML elements
+const retryBtn = document.getElementById('retryBtn');
+const quizModal = document.getElementById('quizModal');
+const submitAnswer = document.getElementById('submitAnswer');
+const answerInput = document.getElementById('answerInput');
+const questionText = document.getElementById('questionText');
+const feedbackText = document.getElementById('feedbackText');
+
+// Open Modal and pick a random question
+retryBtn.addEventListener('click', () => {
+    // Pick random question from array
+    currentQuestion = questions[Math.floor(Math.random() * questions.length)];
+    questionText.innerText = currentQuestion.question;
+    
+    // Reset UI
+    answerInput.value = '';
+    feedbackText.style.display = 'none';
+    quizModal.style.display = 'block'; 
+});
+
+// Check Answer
+submitAnswer.addEventListener('click', () => {
+    let userAnswer = answerInput.value.toLowerCase().trim();
+    
+    // Check if the user's answer is in our list of accepted answers
+    if (currentQuestion.answers.includes(userAnswer)) {
+        quizModal.style.display = 'none'; // Hide modal
+        shuffleBalls(); // TRIGGER EXPLOSION
+    } else {
+        feedbackText.style.display = 'block'; // Show error message
+    }
+});
