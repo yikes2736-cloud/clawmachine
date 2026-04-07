@@ -26,11 +26,9 @@ const render = Render.create({
 const leftWall = Bodies.rectangle(-10, 400, 60, 800, { isStatic: true });
 const rightWall = Bodies.rectangle(610, 400, 60, 800, { isStatic: true });
 
-// The angled walls that funnel the balls to the center
 const leftFunnel = Bodies.rectangle(120, 550, 400, 40, { isStatic: true, angle: Math.PI / 4, render: { fillStyle: '#ffd1dc' } });
 const rightFunnel = Bodies.rectangle(480, 550, 400, 40, { isStatic: true, angle: -Math.PI / 4, render: { fillStyle: '#ffd1dc' } });
 
-// The narrow chute at the bottom
 const leftChute = Bodies.rectangle(260, 680, 20, 150, { isStatic: true, render: { fillStyle: '#ffd1dc' } });
 const rightChute = Bodies.rectangle(340, 680, 20, 150, { isStatic: true, render: { fillStyle: '#ffd1dc' } });
 
@@ -53,10 +51,8 @@ for (let i = 0; i < numberOfBalls; i++) {
     balls.push(ball);
 }
 
-// Add everything to the physics world
 Composite.add(world, [leftWall, rightWall, leftFunnel, rightFunnel, leftChute, rightChute, trapdoor, ...balls]);
 
-// Run the engine
 Render.run(render);
 const runner = Runner.create();
 Runner.run(runner, engine);
@@ -65,17 +61,15 @@ Runner.run(runner, engine);
 // GAME LOGIC & INTERACTIONS
 // ==========================================
 
-// 7. The Gacha "Turn" Logic (FIXED: Now only works when clicking the canvas)
+// 7. The Gacha "Turn" Logic 
 let isDropping = false;
 
 render.canvas.addEventListener('mousedown', () => {
-    if (isDropping) return; // Prevent spam-clicking
+    if (isDropping) return; 
     isDropping = true;
 
-    // Move the trapdoor out of the way instantly
     Body.setPosition(trapdoor, { x: 1000, y: 740 });
 
-    // Wait 400 milliseconds, then put it back
     setTimeout(() => {
         Body.setPosition(trapdoor, { x: 300, y: 740 });
         isDropping = false;
@@ -93,69 +87,74 @@ function shuffleBalls() {
     });
 }
 
-// 9. The Quiz Logic (UPDATED: Non-repeating questions)
+// 9. The Quiz Logic (UPDATED: Multiple Choice)
+// When adding your own questions, just follow this exact structure!
 const questions = [
     {
         question: "Who said: 'Cool, cool, cool, cool, cool. No doubt, no doubt.'?",
-        answers: ["jake", "jake peralta", "peralta"]
+        options: ["Jake Peralta", "Amy Santiago", "Captain Holt", "Terry Jeffords"],
+        correct: "Jake Peralta"
     },
     {
         question: "Who said: 'It's not lupus. It's never lupus.'?",
-        answers: ["house", "gregory house", "dr house"]
+        options: ["Dr. Foreman", "Dr. Wilson", "Gregory House", "Dr. Cameron"],
+        correct: "Gregory House"
     },
     {
         question: "Who said: 'I'm not a psychopath, I'm a high-functioning sociopath.'?",
-        answers: ["sherlock", "sherlock holmes", "holmes"]
+        options: ["John Watson", "Jim Moriarty", "Sherlock Holmes", "Mycroft Holmes"],
+        correct: "Sherlock Holmes"
     },
     {
         question: "Who said: 'Are you the strongest because you're Satoru Gojo, or are you Satoru Gojo because you're the strongest?'?",
-        answers: ["geto", "suguru geto", "suguru"]
+        options: ["Yuji Itadori", "Suguru Geto", "Kento Nanami", "Megumi Fushiguro"],
+        correct: "Suguru Geto"
     }
 ];
 
 let currentQuestion = {};
-let availableQuestions = [...questions]; // Create a copy of the questions to draw from
+let availableQuestions = [...questions]; 
 
-// Grab HTML elements
 const retryBtn = document.getElementById('retryBtn');
 const quizModal = document.getElementById('quizModal');
-const submitAnswer = document.getElementById('submitAnswer');
-const answerInput = document.getElementById('answerInput');
 const questionText = document.getElementById('questionText');
+const optionsContainer = document.getElementById('optionsContainer');
 const feedbackText = document.getElementById('feedbackText');
 
-// Open Modal and pick a random, non-repeating question
+// Open Modal and set up the multiple choice buttons
 retryBtn.addEventListener('click', () => {
-    // If the deck is empty, refill it!
     if (availableQuestions.length === 0) {
         availableQuestions = [...questions];
     }
 
-    // Pick a random index from the remaining questions
     const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-    
-    // Set the current question
     currentQuestion = availableQuestions[randomIndex];
     questionText.innerText = currentQuestion.question;
-    
-    // Remove that question from the available pool so it doesn't repeat this round
     availableQuestions.splice(randomIndex, 1);
     
-    // Reset UI
-    answerInput.value = '';
+    // Clear out the old buttons and hide the error message
+    optionsContainer.innerHTML = '';
     feedbackText.style.display = 'none';
-    quizModal.style.display = 'block'; 
-});
 
-// Check Answer
-submitAnswer.addEventListener('click', () => {
-    let userAnswer = answerInput.value.toLowerCase().trim();
-    
-    // Check if the user's answer is in our list of accepted answers
-    if (currentQuestion.answers.includes(userAnswer)) {
-        quizModal.style.display = 'none'; // Hide modal
-        shuffleBalls(); // TRIGGER EXPLOSION
-    } else {
-        feedbackText.style.display = 'block'; // Show error message
-    }
+    // Create a new button for every option in the array
+    currentQuestion.options.forEach(optionText => {
+        const btn = document.createElement('button');
+        btn.innerText = optionText;
+        btn.classList.add('option-btn'); // Applies the CSS we wrote in HTML
+
+        // What happens when they click an option
+        btn.addEventListener('click', () => {
+            if (optionText === currentQuestion.correct) {
+                quizModal.style.display = 'none'; // Hide modal
+                shuffleBalls(); // BOOM!
+            } else {
+                feedbackText.style.display = 'block'; // Show error text
+                btn.classList.add('wrong'); // Turns the clicked button red
+            }
+        });
+
+        optionsContainer.appendChild(btn); // Add the button to the screen
+    });
+
+    quizModal.style.display = 'block'; 
 });
