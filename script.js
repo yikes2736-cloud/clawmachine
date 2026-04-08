@@ -175,6 +175,13 @@ const questions = [
     { question: "who said: 'you're a dirty little snitch you are!'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "aarushi" },
     { question: "who said: 'actually i will respond with a diss track'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "sai" },
     { question: "who said: 'don't live in your dreams, be practical'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "charvi" }
+    { question: "who said: 'you have two tries left if you fail the third one we're kicking you out of the group'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "anagha" }
+    { question: "who said: 'WE ARE SUCCESSFULLY BECOMING A HIVE MIND'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "rt" }
+    { question: "who said: 'You're telling me, I'll never get to see that chocolate part of you'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "aarushi" }
+    { question: "who said: 'guys I'm intitating the 51st ACT to remove a Pookie Wookie'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "megan" }
+    { question: "who said: 'girlie did you come out of the pussy with full consciousness or what'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "charvi" }
+    { question: "who said: 'fix your medulla oblongata '?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "sai" }
+    { question: "who said: 'lesbians around the world murdering you for this statement'?", options: ["megan", "sai", "charvi", "rt", "aarushi", "anagha", "vrinda"], correct: "rt" }
 ];
 
 let currentQuestion = {};
