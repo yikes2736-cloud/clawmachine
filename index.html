@@ -18,14 +18,14 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            background-color: #fafafa; /* Just a fallback color while the image loads */
+            background-color: #fafafa; 
         }
         
         /* The game canvas */
         canvas {
             border: 4px solid #ffd1dc; 
             border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* Made the shadow slightly darker so it pops against your photo */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
         }
 
         /* The Reroll Button */
@@ -82,6 +82,31 @@
         .option-btn:hover { background: #8ab6d6; }
         .option-btn:active { transform: scale(0.98); }
         .option-btn.wrong { background: #ff8da1; color: white; }
+
+        /* NEW: The gradient background for the photo reveal! */
+        #rewardModal {
+            display: none; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            padding: 25px; 
+            border-radius: 15px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); 
+            text-align: center; 
+            z-index: 20; 
+            width: 300px;
+            /* Animated pastel gradient */
+            background: linear-gradient(-45deg, #ffb6c1, #ffd1dc, #a2cffe, #e6e6fa);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
     </style>
 </head>
 <body>
@@ -90,17 +115,15 @@
 
     <div id="quizModal">
         <h3 id="questionText" style="margin-top: 0;">Question goes here</h3>
-        
         <div id="optionsContainer"></div>
-        
         <p id="feedbackText" style="color: #ff8da1; font-weight: bold; margin-top: 15px; display: none;">Nope, try again!</p>
     </div>
 
-    <div id="rewardModal" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); text-align: center; z-index: 20; width: 300px;">
-        <h2 style="margin-top: 0; color: #ff8da1; font-family: sans-serif;">You got a memory!</h2>
-        <img id="rewardImage" src="" style="width: 100%; border-radius: 10px; margin-bottom: 15px; border: 2px solid #ffd1dc;">
+    <div id="rewardModal">
+        <h2 style="margin-top: 0; color: #333; font-family: sans-serif;">You got a memory!</h2>
+        <img id="rewardImage" src="" style="width: 100%; border-radius: 10px; margin-bottom: 15px; border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
         <br>
-        <button id="closeReward" style="padding: 10px 20px; background: #ffd1dc; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: #333;">Keep Playing</button>
+        <button id="closeReward" style="padding: 10px 20px; background: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: #333;">Keep Playing</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
